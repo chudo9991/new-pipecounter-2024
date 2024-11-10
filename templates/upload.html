@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Object Detection Upload</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+</head>
+
+<body>
+    <h1>Upload Image for Object Detection</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="image" id="image" accept="image/jpeg" required>
+        <button type="submit">Upload Image</button>
+    </form>
+
+    <div id="result" style="display:none;" class="mb-5">
+        <h2>Result:</h2>
+        <p>Detected Objects: <span id="num_objects"></span></p>
+        <div class="container">
+            <img id="detectedImage" alt="Detected Image" class="img-fluid">            
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Предотвращаем перезагрузку страницы
+
+            const formData = new FormData();
+            formData.append('image', document.getElementById('image').files[0]);
+
+            try {
+                const response = await fetch('/upload/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    document.getElementById('num_objects').textContent = result.num_objects;
+                    document.getElementById('detectedImage').src = 'data:image/jpeg;base64,' + result.image;
+                    document.getElementById('result').style.display = 'block';
+                } else {
+                    alert("Error: " + response.statusText);
+                }
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+roboflow 
+ultralytics
+fastapi[all]
+torch
+torchvision
+opencv-python
+pillow
+celery[redis]
+jinja2
+python-multipart
